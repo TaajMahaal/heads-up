@@ -1,0 +1,29 @@
+<div class="effort">
+  <h1>Community Love</h1>
+  <section>
+    <button phx-click="add" phx-value-quantity={@quantity}>
+      + {@quantity}
+    </button>
+    <div>
+      {@responders} responders
+    </div>
+    &times;
+    <div>
+      {@minutes_per_responder} mpr
+    </div>
+    =
+    <div>
+      {@responders * @minutes_per_responder} minutes
+    </div>
+  </section>
+
+  <form phx-submit="set-quantity">
+    <label>Quantity:</label>
+    <input type="number" name="quantity" value={@quantity} />
+  </form>
+
+  <form phx-submit="set-mpr">
+    <label>Minutes per Responder:</label>
+    <input type="number" name="minutes_per_responder" value={@minutes_per_responder} />
+  </form>
+</div>
