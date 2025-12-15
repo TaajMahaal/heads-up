@@ -30,10 +30,10 @@ defmodule HeadsUpWeb.CustomComponents do
     ~H"""
     <div class="headline">
       <h1>
-        {render_slot(@inner_block)}
+        {render_slot(@inner_block, @emoji)}
       </h1>
       <div class="tagline">
-        {render_slot(@tagline, @emoji)}
+        {render_slot(@tagline)}
       </div>
     </div>
     """
