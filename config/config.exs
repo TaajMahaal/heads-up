@@ -9,7 +9,15 @@ import Config
 
 config :heads_up,
   ecto_repos: [HeadsUp.Repo],
-  generators: [timestamp_type: :utc_datetime]
+  generators: [
+    binary_id: true,
+    timestamp_type: :utc_datetime_usec
+  ]
+
+config :heads_up, HeadsUp.Repo,
+  migration_primary_key: [name: :id, type: :string],
+  migration_foreign_key: [type: :string],
+  migration_timestamps: [type: :utc_datetime_usec]
 
 # Configures the endpoint
 config :heads_up, HeadsUpWeb.Endpoint,
@@ -35,8 +43,7 @@ config :heads_up, HeadsUp.Mailer, adapter: Swoosh.Adapters.Local
 config :esbuild,
   version: "0.17.11",
   heads_up: [
-    args:
-      ~w(js/app.js --bundle --target=es2017 --outdir=../priv/static/assets --external:/fonts/* --external:/images/*),
+    args: ~w(js/app.js --bundle --target=es2017 --outdir=../priv/static/assets --external:/fonts/* --external:/images/*),
     cd: Path.expand("../assets", __DIR__),
     env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
   ]

@@ -3,7 +3,7 @@ defmodule HeadsUpWeb.IncidentComponents do
 
   import HeadsUpWeb.CustomComponents
 
-  attr :incident, HeadsUp.Incident, required: true
+  attr :incident, HeadsUp.Incidents.Incident, required: true
 
   def incident_card(assigns) do
     ~H"""
