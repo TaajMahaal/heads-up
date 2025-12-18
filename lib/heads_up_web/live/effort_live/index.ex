@@ -1,4 +1,4 @@
-defmodule HeadsUpWeb.EffortLive.Dashboard do
+defmodule HeadsUpWeb.EffortLive.Index do
   use HeadsUpWeb, :live_view
 
   def mount(_params, _session, socket) do
@@ -6,7 +6,14 @@ defmodule HeadsUpWeb.EffortLive.Dashboard do
       Process.send_after(self(), :tick, 2000)
     end
 
-    {:ok, assign(socket, responders: 0, minutes_per_responder: 10, quantity: 3)}
+    {:ok,
+     assign(
+       socket,
+       responders: 0,
+       minutes_per_responder: 10,
+       quantity: 3,
+       page_title: "Effort"
+     )}
   end
 
   def handle_event("add", %{"quantity" => quantity}, socket) do
