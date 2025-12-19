@@ -1,8 +1,10 @@
 <div class="incident-show">
   <div class="back">
-    <.back navigate={~p"/incidents"}>
-      Back to incidents
-    </.back>
+    <div class="text-gray-100">
+      <.back navigate={~p"/incidents"} class="text-gray-100">
+        Back to incidents
+      </.back>
+    </div>
   </div>
   <div class="incident">
     <img src={@incident.image_path} />
@@ -11,10 +13,10 @@
         <.badge status={@incident.status} />
       </div>
       <header>
-        <h2>{@incident.name}</h2>
-        <div class="priority">
-          {@incident.priority}
-        </div>
+        <h2>
+          <div class="text-gray-100">{@incident.name}</div>
+        </h2>
+        <.priority priority={@incident.priority} />
       </header>
       <div class="description">
         {@incident.description}

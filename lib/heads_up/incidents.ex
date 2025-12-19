@@ -5,7 +5,8 @@ defmodule HeadsUp.Incidents do
   import Ecto.Query, warn: false
 
   def list_incidents do
-    Repo.all(Incident)
+    Incident
+    |> Repo.all()
   end
 
   def get_incident!(id) do

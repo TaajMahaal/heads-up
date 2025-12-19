@@ -50,7 +50,6 @@
   }
 
   /* IncidentLive.Index */
-
   .incident-index .incidents {
     @apply mt-6 grid grid-cols-2 md:grid-cols-3 gap-6;
   }
@@ -134,7 +133,7 @@
   }
 
   .incident-show .incident section .description {
-    @apply text-gray-500 font-light text-lg;
+    @apply text-gray-100 font-light text-lg;
   }
 
   .incident-show .activity {
@@ -315,7 +314,7 @@
   /* Headline Component */
 
   .headline {
-    @apply mx-auto text-center mb-6 p-4 bg-gradient-to-r from-cyan-500 to-sky-600;
+    @apply mx-auto text-center mb-6 p-4 bg-gradient-to-r from-cyan-500 to-sky-600 rounded-2xl;
   }
 
   .headline h1 {

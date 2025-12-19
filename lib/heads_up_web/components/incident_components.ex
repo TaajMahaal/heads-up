@@ -26,13 +26,19 @@ defmodule HeadsUpWeb.IncidentComponents do
   def urgent_incidents(assigns) do
     ~H"""
     <section>
-      <h4>Urgent Incidents</h4>
+      <h4>
+        <div class="text-gray-100">
+          Urgent Incidents
+        </div>
+      </h4>
       <ul class="incidents">
         <%= for incident <- @incidents do %>
           <li>
             <.link navigate={~p"/incidents/#{incident}"}>
               <img src={"#{incident.image_path}"} />
-              {"#{incident.name}"}
+              <div class="text-gray-100">
+                {"#{incident.name}"}
+              </div>
             </.link>
           </li>
         <% end %>
