@@ -1,11 +1,11 @@
 <div class="incident-index">
   <.headline :let={vibe}>
-    <.icon name="hero-trophy-mini" /> 25 Incidents Resolved This Month! {vibe}
+    <.icon name="hero-trophy-mini" /> {@resolved_count} Incidents Resolved This Month! {vibe}
     <:tagline>
       Thanks for pitching in.
     </:tagline>
   </.headline>
-  <div class="incidents">
-    <.incident_card :for={incident <- @incidents} incident={incident} />
+  <div class="incidents" id="incidents" phx-update="stream">
+    <.incident_card :for={{dom_id, incident} <- @streams.incidents} incident={incident} id={dom_id} />
   </div>
 </div>

@@ -21,6 +21,25 @@ defmodule HeadsUpWeb.CustomComponents do
     """
   end
 
+  attr :priority, :integer, default: 3
+  attr :rest, :global
+
+  def priority(assigns) do
+    ~H"""
+    <div
+      class={[
+        "text-xs text-white font-medium rounded-full px-3 py-1.5",
+        @priority == 1 && "bg-purple-600",
+        @priority == 2 && "bg-red-600",
+        @priority == 3 && "bg-yellow-600"
+      ]}
+      {@rest}
+    >
+      {@priority}
+    </div>
+    """
+  end
+
   slot :inner_block, required: true
   slot :tagline, required: true
 

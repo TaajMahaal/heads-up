@@ -5,7 +5,7 @@ defmodule HeadsUp.Incidents.Incident do
     field :name, :string
     field :description, :string
     field :priority, :integer
-    field :status, Ecto.Enum, values: [:pending, :resolved, :closed]
+    field :status, Ecto.Enum, values: [:pending, :resolved, :canceled]
     field :image_path, :string
 
     timestamps(type: :utc_datetime_usec)
