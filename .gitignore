@@ -39,3 +39,24 @@ heads_up-*.tar
 npm-debug.log
 /assets/node_modules/
 
+# macOS
+.DS_Store
+
+# Elixir tools
+.elixir-tools/
+.lexical/
+
+# Editor temporary files
+*~
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# Environment variables
+.env
+.env.local
+
+# Docker volumes (if any local data dirs exist)
+/monitoring/data/
+
