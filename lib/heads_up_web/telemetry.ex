@@ -12,8 +12,8 @@ defmodule HeadsUpWeb.Telemetry do
       # Telemetry poller will execute the given period measurements
       # every 10_000ms. Learn more here: https://hexdocs.pm/telemetry_metrics
       {:telemetry_poller, measurements: periodic_measurements(), period: 10_000},
-      # Prometheus metrics exporter on /metrics endpoint
-      {TelemetryMetricsPrometheus.Core, metrics: metrics(), port: 9568}
+      # Prometheus metrics exporter standalone server
+      {TelemetryMetricsPrometheus, metrics: metrics(), port: 9568}
     ]
 
     Supervisor.init(children, strategy: :one_for_one)

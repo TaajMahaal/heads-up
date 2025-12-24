@@ -155,6 +155,38 @@ defmodule HeadsUp.OtelLogsSender do
   end
 
   defp send_to_otel(timestamp, message, severity, attributes) do
+    # Get current trace context
+    span_ctx = :otel_tracer.current_span_ctx()
+
+    # Add trace_id and span_id if available
+    {enhanced_message, log_record_updates} = if :otel_span.is_recording(span_ctx) do
+      trace_id = :otel_span.trace_id(span_ctx)
+      span_id = :otel_span.span_id(span_ctx)
+
+      trace_id_hex = Base.encode16(<<trace_id::128>>, case: :lower)
+      span_id_hex = Base.encode16(<<span_id::64>>, case: :lower)
+
+      # Include trace_id in the message for derived field extraction
+      enhanced_msg = "#{message} trace_id=#{trace_id_hex}"
+
+      updates = %{
+        traceId: trace_id_hex,
+        spanId: span_id_hex
+      }
+
+      {enhanced_msg, updates}
+    else
+      {message, %{}}
+    end
+
+    # Build log record with trace context
+    log_record = %{
+      timeUnixNano: to_string(timestamp),
+      severityText: severity,
+      body: %{stringValue: enhanced_message}
+    }
+    |> Map.merge(log_record_updates)
+
     body = %{
       resourceLogs: [
         %{
@@ -163,13 +195,7 @@ defmodule HeadsUp.OtelLogsSender do
           },
           scopeLogs: [
             %{
-              logRecords: [
-                %{
-                  timeUnixNano: to_string(timestamp),
-                  severityText: severity,
-                  body: %{stringValue: message}
-                }
-              ]
+              logRecords: [log_record]
             }
           ]
         }

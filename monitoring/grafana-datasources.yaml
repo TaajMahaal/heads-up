@@ -3,6 +3,7 @@ apiVersion: 1
 datasources:
   - name: VictoriaMetrics
     type: victoriametrics-metrics-datasource
+    uid: victoriametrics
     url: http://victoriametrics:8428
     access: proxy
     isDefault: true
@@ -11,12 +12,21 @@ datasources:
 
   - name: VictoriaLogs
     type: victoriametrics-logs-datasource
+    uid: victorialogs
     url: http://victorialogs:9428
     access: proxy
     isDefault: false
+    jsonData:
+      derivedFields:
+        - name: "trace_id"
+          matcherRegex: "trace_id=([a-f0-9]+)"
+          url: "$${__value.raw}"
+          datasourceUid: "tempo"
+          urlDisplayLabel: "View Trace"
 
   - name: Tempo
     type: tempo
+    uid: tempo
     url: http://tempo:3200
     access: proxy
     isDefault: false
@@ -24,4 +34,8 @@ datasources:
       nodeGraph:
         enabled: true
       tracesToLogsV2:
-        datasourceUid: "VictoriaLogs"
+        datasourceUid: "victorialogs"
+        spanStartTimeShift: "-5m"
+        spanEndTimeShift: "5m"
+        customQuery: true
+        query: 'trace_id: "$${__trace.traceId}"'
