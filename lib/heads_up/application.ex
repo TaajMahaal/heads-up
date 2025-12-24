@@ -7,24 +7,27 @@ defmodule HeadsUp.Application do
 
   @impl true
   def start(_type, _args) do
-    children = [
-      HeadsUpWeb.Telemetry,
-      HeadsUp.Repo,
-      {DNSCluster, query: Application.get_env(:heads_up, :dns_cluster_query) || :ignore},
-      {Phoenix.PubSub, name: HeadsUp.PubSub},
-      # Start the Finch HTTP client for sending emails
-      {Finch, name: HeadsUp.Finch},
-      # Start a worker by calling: HeadsUp.Worker.start_link(arg)
-      # {HeadsUp.Worker, arg},
-      # Start to serve requests, typically the last entry
-      HeadsUpWeb.Endpoint
-    ]
+      OpentelemetryBandit.setup()
+      OpentelemetryPhoenix.setup(adapter: :bandit)
+      OpentelemetryEcto.setup([:heads_up, :repo])
 
-    # See https://hexdocs.pm/elixir/Supervisor.html
-    # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: HeadsUp.Supervisor]
-    Supervisor.start_link(children, opts)
-  end
+      if Code.ensure_loaded?(OpentelemetryLoggerMetadata) do
+         Logger.add_backend(OpentelemetryLoggerMetadata)
+      end
+
+      children = [
+        HeadsUpWeb.Telemetry,
+        HeadsUp.Repo,
+        {DNSCluster, query: Application.get_env(:heads_up, :dns_cluster_query) || :ignore},
+        {Phoenix.PubSub, name: HeadsUp.PubSub},
+        {Finch, name: HeadsUp.Finch},
+        HeadsUpWeb.Endpoint,
+        {HeadsUp.OtelLogsSender, []}
+      ]
+
+      opts = [strategy: :one_for_one, name: HeadsUp.Supervisor]
+      Supervisor.start_link(children, opts)
+    end
 
   # Tell Phoenix to update the endpoint configuration
   # whenever the application is updated.

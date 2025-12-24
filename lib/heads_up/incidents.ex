@@ -9,6 +9,12 @@ defmodule HeadsUp.Incidents do
     |> Repo.all()
   end
 
+  # def fitler_incidents(%{"q" => q, "status" => status, "sort_by" => sort_by}) do
+  def fitler_incidents(%{}) do
+    Incident
+    |> Repo.all()
+  end
+
   def get_incident!(id) do
     Repo.get!(Incident, id)
   end
@@ -16,7 +22,8 @@ defmodule HeadsUp.Incidents do
   def urgent_incidents(incident) do
     Incident
     |> where([i], i.id != ^incident.id)
-    |> order_by([i], desc: i.inserted_at)
+    |> where([i], i.status == :pending)
+    |> order_by([i], desc: i.priority, asc: i.inserted_at)
     |> limit(5)
     |> Repo.all()
   end

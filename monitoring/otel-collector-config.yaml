@@ -1,0 +1,52 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: "0.0.0.0:4317"
+      http:
+        endpoint: "0.0.0.0:4318"
+
+  prometheus:
+    config:
+      scrape_configs:
+        - job_name: 'heads_up'
+          scrape_interval: 15s
+          static_configs:
+            - targets: ['host.docker.internal:9568']
+              labels:
+                service: 'heads_up'
+
+processors:
+  batch:
+
+exporters:
+  debug:
+    verbosity: detailed
+
+  prometheusremotewrite:
+    endpoint: "http://victoriametrics:8428/api/v1/write"
+
+  otlp:
+    endpoint: "tempo:4317"
+    tls:
+      insecure: true
+
+  otlphttp/logs:
+    logs_endpoint: "http://victorialogs:9428/insert/opentelemetry/v1/logs"
+    tls:
+      insecure: true
+
+service:
+  pipelines:
+    metrics:
+      receivers: [otlp, prometheus]
+      processors: [batch]
+      exporters: [prometheusremotewrite]
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlp]
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [debug, otlphttp/logs]

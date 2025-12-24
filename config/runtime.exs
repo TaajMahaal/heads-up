@@ -20,6 +20,11 @@ if System.get_env("PHX_SERVER") do
   config :heads_up, HeadsUpWeb.Endpoint, server: true
 end
 
+if System.get_env("PHX_SERVER") || Mix.env() == :dev do
+  # Configuration moved to config.exs for consistency
+  # OpenTelemetry will use the configuration from config.exs
+end
+
 if config_env() == :prod do
   database_url =
     System.get_env("DATABASE_URL") ||

@@ -21,6 +21,30 @@ defmodule HeadsUpWeb.IncidentComponents do
     """
   end
 
+  attr :form, Phoenix.HTML.Form, required: true
+
+  def(filter_form(assigns)) do
+    ~H"""
+    <.form for={@form}>
+      <.input field={@form[:q]} placeholder="Search..." autocomplete="off" />
+
+      <.input
+        type="select"
+        field={@form[:status]}
+        prompt="Status"
+        options={[:pending, :resolved, :canceled]}
+      />
+
+      <.input
+        type="select"
+        field={@form[:sort_by]}
+        prompt="Sort by"
+        options={[:priority, :status]}
+      />
+    </.form>
+    """
+  end
+
   attr :incidents, :list, required: true
 
   def urgent_incidents(assigns) do

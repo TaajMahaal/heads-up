@@ -1,0 +1,66 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: heads_up_dev
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    ports:
+      - "4317:4317" # gRPC
+      - "4318:4318" # HTTP
+
+  victoriametrics:
+    image: victoriametrics/victoria-metrics:latest
+    command:
+      - "-storageDataPath=/victoria-metrics-data"
+      - "-retentionPeriod=1y"
+    ports:
+      - "8428:8428"
+
+  victorialogs:
+    image: victoriametrics/victoria-logs:latest
+    command:
+      - "-storageDataPath=/victoria-logs-data"
+    ports:
+      - "9428:9428"
+
+  tempo:
+    image: grafana/tempo:latest
+    command: ["-config.file=/etc/tempo.yaml"]
+    volumes:
+      - ./tempo.yaml:/etc/tempo.yaml
+    ports:
+      - "3200:3200" # Grafana
+
+  grafana:
+    image: grafana/grafana:latest
+    environment:
+      - GF_INSTALL_PLUGINS=victoriametrics-logs-datasource,victoriametrics-metrics-datasource,grafana-polystat-panel
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+    volumes:
+      - ./grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
+    ports:
+      - "3000:3000"
+    depends_on:
+      - victoriametrics
+      - victorialogs
+      - tempo
+
+volumes:
+  postgres_data:

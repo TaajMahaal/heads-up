@@ -9,6 +9,7 @@ defmodule HeadsUpWeb.IncidentLive.Index do
       socket
       |> assign(:page_title, "Incidents")
       |> assign(:resolved_count, Incidents.count_by_status(:resolved))
+      |> assign(:form, to_form(%{}))
       |> stream(:incidents, Incidents.list_incidents())
 
     {:ok, socket}

@@ -30,7 +30,7 @@ defmodule HeadsUp.MixProject do
   def application do
     [
       mod: {HeadsUp.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :opentelemetry]
     ]
   end
 
@@ -42,29 +42,66 @@ defmodule HeadsUp.MixProject do
   #
   # Type `mix help deps` for examples and options.
   defp deps do
+    phoenix_deps() ++
+    storage_deps() ++
+    monitoring_deps() ++
+    utility_deps() ++
+    dev_and_test_deps()
+  end
+
+  defp phoenix_deps do
     [
       {:phoenix, "~> 1.7.21"},
+      {:phoenix_html, "~> 4.1"},
+      {:phoenix_live_view, "~> 1.0"},
+      {:phoenix_live_dashboard, "~> 0.8.3"},
+      {:bandit, "~> 1.5"},
+      {:jason, "~> 1.2"},
+      {:dns_cluster, "~> 0.1.1"},
+      {:esbuild, "~> 0.8", runtime: Mix.env() == :dev},
+      {:tailwind, "~> 0.2.0", runtime: Mix.env() == :dev},
+      {:heroicons, github: "tailwindlabs/heroicons", tag: "v2.1.1", sparse: "optimized", app: false, compile: false, depth: 1}
+    ]
+  end
+
+  defp storage_deps do
+    [
       {:phoenix_ecto, "~> 4.5"},
       {:ecto_sql, "~> 3.10"},
       {:postgrex, ">= 0.0.0"},
-      {:phoenix_html, "~> 4.1"},
-      {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:phoenix_live_view, "~> 1.0"},
-      {:floki, ">= 0.30.0", only: :test},
-      {:phoenix_live_dashboard, "~> 0.8.3"},
-      {:esbuild, "~> 0.8", runtime: Mix.env() == :dev},
-      {:tailwind, "~> 0.2.0", runtime: Mix.env() == :dev},
-      {:heroicons, github: "tailwindlabs/heroicons", tag: "v2.1.1", sparse: "optimized", app: false, compile: false, depth: 1},
-      {:swoosh, "~> 1.5"},
-      {:finch, "~> 0.13"},
+      {:ecto_ulid, "~> 0.3"}
+    ]
+  end
+
+  defp monitoring_deps do
+    [
+      {:opentelemetry, "~> 1.6"},
+      {:opentelemetry_api, "~> 1.5"},
+      {:opentelemetry_exporter, "~> 1.9"},
+      {:opentelemetry_phoenix, "~> 2.0"},
+      {:opentelemetry_ecto, "~> 1.2"},
+      {:opentelemetry_bandit, "~> 0.3"},
+      {:opentelemetry_logger_metadata, "~> 0.2"},
+
       {:telemetry_metrics, "~> 1.0"},
       {:telemetry_poller, "~> 1.0"},
-      {:gettext, "~> 0.26"},
-      {:jason, "~> 1.2"},
-      {:dns_cluster, "~> 0.1.1"},
-      {:bandit, "~> 1.5"},
+      {:telemetry_metrics_prometheus_core, "~> 1.2"}
+    ]
+  end
+
+  defp utility_deps do
+    [
+      {:swoosh, "~> 1.5"},
+      {:finch, "~> 0.13"},
+      {:gettext, "~> 0.26"}
+    ]
+  end
+
+  defp dev_and_test_deps do
+    [
+      {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
-      {:ecto_ulid, "~> 0.3"}
+      {:floki, ">= 0.30.0", only: :test}
     ]
   end
 

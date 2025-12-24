@@ -5,6 +5,9 @@
       Thanks for pitching in.
     </:tagline>
   </.headline>
+
+  <.filter_form form={@form} />
+
   <div class="incidents" id="incidents" phx-update="stream">
     <.incident_card :for={{dom_id, incident} <- @streams.incidents} incident={incident} id={dom_id} />
   </div>
