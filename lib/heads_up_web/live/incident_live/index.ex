@@ -14,4 +14,13 @@ defmodule HeadsUpWeb.IncidentLive.Index do
 
     {:ok, socket}
   end
+
+  def handle_event("filter", params, socket) do
+    socket =
+      socket
+      |> assign(:form, to_form(params))
+      |> stream(:incidents, Incidents.fitler_incidents(params), reset: true)
+
+    {:noreply, socket}
+  end
 end

@@ -23,9 +23,9 @@ defmodule HeadsUpWeb.IncidentComponents do
 
   attr :form, Phoenix.HTML.Form, required: true
 
-  def(filter_form(assigns)) do
+  def filter_form(assigns) do
     ~H"""
-    <.form for={@form}>
+    <.form for={@form} id="filter-form" phx-change="filter" phx-submit="filter">
       <.input field={@form[:q]} placeholder="Search..." autocomplete="off" />
 
       <.input

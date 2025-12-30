@@ -10,8 +10,11 @@ defmodule HeadsUp.Incidents do
   end
 
   # def fitler_incidents(%{"q" => q, "status" => status, "sort_by" => sort_by}) do
-  def fitler_incidents(%{}) do
+  def fitler_incidents(filter) do
     Incident
+    |> where(status: ^filter["status"])
+    |> where([i], ilike(i.name, ^"%#{filter["q"]}%"))
+    # |> order_by(^filter["sort_by"])
     |> Repo.all()
   end
 
