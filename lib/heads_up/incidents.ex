@@ -9,7 +9,23 @@ defmodule HeadsUp.Incidents do
     |> Repo.all()
   end
 
-  # def fitler_incidents(%{"q" => q, "status" => status, "sort_by" => sort_by}) do
+  def count_by_status(status) do
+    Incident
+    |> where([i], i.status == ^status)
+    |> Repo.aggregate(:count)
+  end
+
+  def urgent_incidents(incident) do
+    Process.sleep(2000)
+
+    Incident
+    |> where([i], i.id != ^incident.id)
+    |> where([i], i.status == :pending)
+    |> order_by([i], desc: i.priority, asc: i.inserted_at)
+    |> limit(5)
+    |> Repo.all()
+  end
+
   def filter_incidents(filter) do
     Incident
     |> with_status(filter["status"])
@@ -48,20 +64,5 @@ defmodule HeadsUp.Incidents do
 
   def get_incident!(id) do
     Repo.get!(Incident, id)
-  end
-
-  def urgent_incidents(incident) do
-    Incident
-    |> where([i], i.id != ^incident.id)
-    |> where([i], i.status == :pending)
-    |> order_by([i], desc: i.priority, asc: i.inserted_at)
-    |> limit(5)
-    |> Repo.all()
-  end
-
-  def count_by_status(status) do
-    Incident
-    |> where([i], i.status == ^status)
-    |> Repo.aggregate(:count)
   end
 end

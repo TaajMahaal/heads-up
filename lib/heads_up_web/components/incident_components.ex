@@ -68,9 +68,19 @@ defmodule HeadsUpWeb.IncidentComponents do
           Urgent Incidents
         </div>
       </h4>
-      <ul class="incidents">
-        <%= for incident <- @incidents do %>
-          <li>
+      <.async_result :let={result} assign={@incidents}>
+        <:loading>
+          <div class="loading">
+            <div class="spinner"></div>
+          </div>
+        </:loading>
+        <:failed :let={{:error, reason}}>
+          <div class="failed">
+            Daaaaaamn: {reason}
+          </div>
+        </:failed>
+        <ul class="incidents">
+          <li :for={incident <- result}>
             <.link navigate={~p"/incidents/#{incident}"}>
               <img src={"#{incident.image_path}"} />
               <div class="text-gray-100">
@@ -78,8 +88,8 @@ defmodule HeadsUpWeb.IncidentComponents do
               </div>
             </.link>
           </li>
-        <% end %>
-      </ul>
+        </ul>
+      </.async_result>
     </section>
     """
   end
