@@ -5,16 +5,19 @@ defmodule HeadsUpWeb.IncidentLive.Index do
   alias HeadsUp.Incidents
 
   def mount(_params, _session, socket) do
+    socket =
+      socket
+      |> assign(:page_title, "Incidents")
+      |> assign(:resolved_count, Incidents.count_by_status(:resolved))
+
     {:ok, socket}
   end
 
   def handle_params(params, _uri, socket) do
     socket =
       socket
-      |> assign(:page_title, "Incidents")
-      |> assign(:resolved_count, Incidents.count_by_status(:resolved))
       |> assign(:form, to_form(params))
-      |> stream(:incidents, Incidents.filter_incidents(params))
+      |> stream(:incidents, Incidents.filter_incidents(params), reset: true)
 
     {:noreply, socket}
   end
@@ -25,7 +28,7 @@ defmodule HeadsUpWeb.IncidentLive.Index do
       |> Map.take(~w"q status sort_by")
       |> Map.reject(fn {_, v} -> v == "" end)
 
-    socket = push_navigate(socket, to: ~p"/incidents?#{params}")
+    socket = push_patch(socket, to: ~p"/incidents?#{params}")
 
     {:noreply, socket}
   end

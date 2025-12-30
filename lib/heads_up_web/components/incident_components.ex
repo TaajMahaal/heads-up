@@ -51,7 +51,7 @@ defmodule HeadsUpWeb.IncidentComponents do
         ]}
       />
 
-      <.link navigate={~p"/incidents"} class="button bg-white text-blue-950">
+      <.link patch={~p"/incidents"} class="button bg-white text-blue-950">
         Reset
       </.link>
     </.form>
