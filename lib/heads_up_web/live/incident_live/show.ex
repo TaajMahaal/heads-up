@@ -4,7 +4,6 @@ defmodule HeadsUpWeb.IncidentLive.Show do
   alias HeadsUp.Incidents
   alias Phoenix.LiveView.AsyncResult
 
-  import HeadsUpWeb.CustomComponents
   import HeadsUpWeb.IncidentComponents
 
   def mount(_params, _session, socket) do
@@ -32,9 +31,8 @@ defmodule HeadsUpWeb.IncidentLive.Show do
     {:noreply, assign(socket, :urgent_incidents, result)}
   end
 
-  def handle_async(:fetch_urgent_incidents, {:exit, {exception, _stacktrace}}, socket) do
-    message = Exception.message(exception)
-    result = AsyncResult.failed(socket.assigns.urgent_incidents, {:error, message})
+  def handle_async(:fetch_urgent_incidents, {:exit, reason}, socket) do
+    result = AsyncResult.failed(socket.assigns.urgent_incidents, {:error, reason})
 
     {:noreply, assign(socket, :urgent_incidents, result)}
   end

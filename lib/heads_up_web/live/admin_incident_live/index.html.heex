@@ -1,0 +1,22 @@
+<div class="admin-index">
+  <.header>
+    <div class="text-white">
+      {@page_title}
+    </div>
+    <div class="bg-blue-100">
+      <.table id="incidents" rows={@streams.incidents}>
+        <:col :let={{_dom_id, incident}} label="Name">
+          <.link navigate={~p"/admin/incidents/#{incident}"}>
+            {incident.name}
+          </.link>
+        </:col>
+        <:col :let={{_dom_id, incident}} label="Status">
+          <.badge status={incident.status} />
+        </:col>
+        <:col :let={{_dom_id, incident}} label="Priority">
+          <.priority priority={incident.priority} />
+        </:col>
+      </.table>
+    </div>
+  </.header>
+</div>
