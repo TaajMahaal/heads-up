@@ -50,6 +50,10 @@ defmodule HeadsUpWeb.IncidentComponents do
           "Priority: Low to High": "priority_asc"
         ]}
       />
+
+      <.link navigate={~p"/incidents"} class="button bg-white text-blue-950">
+        Reset
+      </.link>
     </.form>
     """
   end

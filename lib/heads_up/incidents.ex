@@ -10,7 +10,7 @@ defmodule HeadsUp.Incidents do
   end
 
   # def fitler_incidents(%{"q" => q, "status" => status, "sort_by" => sort_by}) do
-  def fitler_incidents(filter) do
+  def filter_incidents(filter) do
     Incident
     |> with_status(filter["status"])
     |> search_by(filter["q"])
