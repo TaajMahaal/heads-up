@@ -12,10 +12,38 @@ defmodule HeadsUp.Incidents do
   # def fitler_incidents(%{"q" => q, "status" => status, "sort_by" => sort_by}) do
   def fitler_incidents(filter) do
     Incident
-    |> where(status: ^filter["status"])
-    |> where([i], ilike(i.name, ^"%#{filter["q"]}%"))
-    # |> order_by(^filter["sort_by"])
+    |> with_status(filter["status"])
+    |> search_by(filter["q"])
+    |> sort(filter["sort_by"])
     |> Repo.all()
+  end
+
+  defp with_status(query, status) when status in ~w"pending resolved canceled" do
+    where(query, status: ^status)
+  end
+
+  defp with_status(query, _), do: query
+
+  defp search_by(query, q) when q not in ["", nil] do
+    where(query, [i], ilike(i.name, ^"%#{q}%"))
+  end
+
+  defp search_by(query, _), do: query
+
+  defp sort(query, "priority_asc") do
+    order_by(query, desc: :priority)
+  end
+
+  defp sort(query, "priority_desc") do
+    order_by(query, asc: :priority)
+  end
+
+  defp sort(query, "status") do
+    order_by(query, :status)
+  end
+
+  defp sort(query, _) do
+    order_by(query, :id)
   end
 
   def get_incident!(id) do

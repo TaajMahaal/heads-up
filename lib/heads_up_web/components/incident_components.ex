@@ -26,7 +26,12 @@ defmodule HeadsUpWeb.IncidentComponents do
   def filter_form(assigns) do
     ~H"""
     <.form for={@form} id="filter-form" phx-change="filter" phx-submit="filter">
-      <.input field={@form[:q]} placeholder="Search..." autocomplete="off" />
+      <.input
+        field={@form[:q]}
+        placeholder="Search..."
+        autocomplete="off"
+        phx-debounce="500"
+      />
 
       <.input
         type="select"
@@ -39,7 +44,11 @@ defmodule HeadsUpWeb.IncidentComponents do
         type="select"
         field={@form[:sort_by]}
         prompt="Sort by"
-        options={[:priority, :status]}
+        options={[
+          Status: "status",
+          "Priority: High to Low": "priority_desc",
+          "Priority: Low to High": "priority_asc"
+        ]}
       />
     </.form>
     """
