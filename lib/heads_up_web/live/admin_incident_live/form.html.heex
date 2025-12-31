@@ -2,7 +2,7 @@
   <.header>
     {@page_title}
   </.header>
-  <.simple_form for={@form} id="incident-form">
+  <.simple_form for={@form} id="incident-form" phx-submit="save">
     <.input field={@form[:name]} label="Name" />
 
     <.input field={@form[:description]} type="textarea" label="Description" />
@@ -20,7 +20,7 @@
     <.input field={@form[:image_path]} label="Image Path" />
 
     <:actions>
-      <.button>
+      <.button phx-disable-with="Saving...">
         Save Incident
       </.button>
     </:actions>
