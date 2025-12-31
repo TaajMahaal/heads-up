@@ -1,6 +1,7 @@
 alias HeadsUp.Admin
-alias HeadsUp.Repo
 alias HeadsUp.Incidents
 alias HeadsUp.Incidents.Incident
+alias HeadsUp.Repo
 
+import Ecto.Changeset
 import Ecto.Query
