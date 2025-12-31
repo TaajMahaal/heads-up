@@ -2,12 +2,12 @@
   <.header>
     {@page_title}
   </.header>
-  <.simple_form for={@form} id="incident-form" phx-submit="save">
-    <.input field={@form[:name]} label="Name" />
+  <.simple_form for={@form} id="incident-form" phx-submit="save" phx-change="validate">
+    <.input field={@form[:name]} label="Name" required="true" />
 
-    <.input field={@form[:description]} type="textarea" label="Description" />
+    <.input field={@form[:description]} type="textarea" label="Description" phx-debounce="blur" required="true" />
 
-    <.input field={@form[:priority]} type="number" label="Priority" />
+    <.input field={@form[:priority]} type="number" label="Priority" required="true" />
 
     <.input
       field={@form[:status]}
@@ -15,9 +15,10 @@
       label="Status"
       prompt="Choose a status"
       options={[:pending, :resolved, :canceled]}
+      required="true"
     />
 
-    <.input field={@form[:image_path]} label="Image Path" />
+    <.input field={@form[:image_path]} label="Image Path" required="true" />
 
     <:actions>
       <.button phx-disable-with="Saving...">

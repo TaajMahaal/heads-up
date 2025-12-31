@@ -5,7 +5,7 @@ defmodule HeadsUpWeb.AdminIncidentLive.Form do
   alias HeadsUp.Incidents.Incident
 
   def mount(_params, _session, socket) do
-    changeset = Incident.changeset(%Incident{}, %{})
+    changeset = Admin.change_incident(%Incident{})
 
     socket =
       socket
@@ -30,5 +30,15 @@ defmodule HeadsUpWeb.AdminIncidentLive.Form do
 
         {:noreply, socket}
     end
+  end
+
+  def handle_event("validate", %{"incident" => incident_params}, socket) do
+    changeset = Admin.change_incident(%Incident{}, incident_params)
+
+    socket =
+      socket
+      |> assign(:form, to_form(changeset, action: :validate))
+
+    {:noreply, socket}
   end
 end
