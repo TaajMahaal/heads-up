@@ -27,20 +27,7 @@ defmodule HeadsUpWeb.AdminIncidentLive.Form do
   end
 
   def handle_event("save", %{"incident" => incident_params}, socket) do
-    case Admin.create_incident(incident_params) do
-      {:ok, incident} ->
-        socket =
-          socket
-          |> put_flash(:info, "Incident created successfully")
-          |> push_navigate(to: ~p"/admin/incidents")
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        socket =
-          socket
-          |> assign(:form, to_form(changeset))
-
-        {:noreply, socket}
-    end
+    save_incident(socket, socket.assigns.live_action, incident_params)
   end
 
   def handle_event("validate", %{"incident" => incident_params}, socket) do
@@ -51,5 +38,43 @@ defmodule HeadsUpWeb.AdminIncidentLive.Form do
       |> assign(:form, to_form(changeset, action: :validate))
 
     {:noreply, socket}
+  end
+
+  defp save_incident(socket, :new, incident_params) do
+    case Admin.create_incident(incident_params) do
+      {:ok, _incident} ->
+        socket =
+          socket
+          |> put_flash(:info, "Incident created successfully")
+          |> push_navigate(to: ~p"/admin/incidents")
+
+        {:noreply, socket}
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        socket =
+          socket
+          |> assign(:form, to_form(changeset))
+
+        {:noreply, socket}
+    end
+  end
+
+  defp save_incident(socket, :edit, incident_params) do
+    case Admin.update_incident(socket.assigns.incident, incident_params) do
+      {:ok, _incident} ->
+        socket =
+          socket
+          |> put_flash(:info, "Incident updated successfully")
+          |> push_navigate(to: ~p"/admin/incidents")
+
+        {:noreply, socket}
+
+      _ ->
+        socket =
+          socket
+          |> put_flash(:error, "Failed to update incident")
+
+        {:noreply, socket}
+    end
   end
 end
