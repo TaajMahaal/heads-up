@@ -9,7 +9,7 @@
   </.header>
   <.table id="incidents" rows={@streams.incidents}>
     <:col :let={{_dom_id, incident}} label="Name">
-      <.link navigate={~p"/admin/incidents/#{incident}"}>
+      <.link navigate={~p"/admin/incidents/#{incident}/edit"}>
         {incident.name}
       </.link>
     </:col>
@@ -22,6 +22,11 @@
     <:action :let={{_dom_id, incident}}>
       <.link navigate={~p"/admin/incidents/#{incident}/edit"}>
         Edit
+      </.link>
+    </:action>
+    <:action :let={{_dom_id, incident}}>
+      <.link phx-click="delete" phx-value-id={incident.id} data-confirm="Are you sure?">
+        <.icon name="hero-trash" class="h-4 w-4" />
       </.link>
     </:action>
   </.table>
