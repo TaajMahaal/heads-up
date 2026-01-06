@@ -43,10 +43,10 @@ defmodule HeadsUp.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     phoenix_deps() ++
-    storage_deps() ++
-    monitoring_deps() ++
-    utility_deps() ++
-    dev_and_test_deps()
+      storage_deps() ++
+      monitoring_deps() ++
+      utility_deps() ++
+      dev_and_test_deps()
   end
 
   defp phoenix_deps do
@@ -55,7 +55,7 @@ defmodule HeadsUp.MixProject do
       {:phoenix_html, "~> 4.1"},
       {:phoenix_live_view, "~> 1.0"},
       {:phoenix_live_dashboard, "~> 0.8.3"},
-      {:bandit, "~> 1.5"},
+      {:bandit, "~> 1.6"},
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
       {:esbuild, "~> 0.8", runtime: Mix.env() == :dev},
@@ -82,7 +82,6 @@ defmodule HeadsUp.MixProject do
       {:opentelemetry_ecto, "~> 1.2"},
       {:opentelemetry_bandit, "~> 0.3"},
       {:opentelemetry_logger_metadata, "~> 0.2"},
-
       {:telemetry_metrics, "~> 1.0"},
       {:telemetry_poller, "~> 1.0"},
       {:telemetry_metrics_prometheus, "~> 1.1"}
