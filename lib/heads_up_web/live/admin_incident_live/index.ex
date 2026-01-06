@@ -34,4 +34,16 @@ defmodule HeadsUpWeb.AdminIncidentLive.Index do
         {:noreply, socket}
     end
   end
+
+  def toggle_joke(js \\ %JS{}) do
+    js
+    |> JS.toggle(to: "#joke", in: "fade-in-scale", out: "fade-out-scale")
+    |> JS.toggle_attribute({"aria-expanded", "true", "false"})
+  end
+
+  def click_delete(js \\ %JS{}, dom_id, incident) do
+    js
+    |> JS.push("delete", value: %{id: incident.id})
+    |> JS.hide(to: "##{dom_id}", transition: "fade-out duration-300")
+  end
 end

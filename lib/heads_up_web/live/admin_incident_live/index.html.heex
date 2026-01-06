@@ -2,12 +2,12 @@
   <.button
     aria-controls="joke"
     aria-expanded="false"
-    phx-click={JS.toggle(to: "joke", in: "fade-in-scale", out: "fade-out-scale")}
+    phx-click={toggle_joke()}
   >
     Toggle Joke
   </.button>
 
-  <div id="joke" class="joke hidden">
+  <div id="joke" class="joke hidden" phx-click={JS.toggle_class("animate-bounce", to: "#joke")}>
     Why shouldn't you trust trees?
   </div>
 
@@ -19,11 +19,13 @@
       </.link>
     </:actions>
   </.header>
-  <.table id="incidents" rows={@streams.incidents}>
+  <.table
+    id="incidents"
+    rows={@streams.incidents}
+    row_click={fn {_, incident} -> JS.navigate(~p"/admin/incidents/#{incident}/edit") end}
+  >
     <:col :let={{_dom_id, incident}} label="Name">
-      <.link navigate={~p"/admin/incidents/#{incident}/edit"}>
-        {incident.name}
-      </.link>
+      {incident.name}
     </:col>
     <:col :let={{_dom_id, incident}} label="Status">
       <.badge status={incident.status} />
@@ -36,8 +38,12 @@
         Edit
       </.link>
     </:action>
-    <:action :let={{_dom_id, incident}}>
-      <.link phx-click="delete" phx-value-id={incident.id} data-confirm="Are you sure?">
+    <:action :let={{dom_id, incident}}>
+      <.link
+        phx-click={click_delete(dom_id, incident)}
+        phx-value-id={incident.id}
+        data-confirm="Are you sure?"
+      >
         <.icon name="hero-trash" class="h-4 w-4" />
       </.link>
     </:action>

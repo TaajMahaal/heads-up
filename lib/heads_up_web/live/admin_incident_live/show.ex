@@ -2,9 +2,6 @@ defmodule HeadsUpWeb.AdminIncidentLive.Show do
   use HeadsUpWeb, :live_view
 
   alias HeadsUp.Incidents
-  alias Phoenix.LiveView.AsyncResult
-
-  import HeadsUpWeb.IncidentComponents
 
   def mount(_params, _session, socket) do
     {:ok, socket}
