@@ -28,7 +28,7 @@ defmodule HeadsUpWeb.CustomComponents do
     ~H"""
     <div
       class={[
-        "text-xs text-white font-medium rounded-full px-3 py-1.5",
+        "text-xs text-white font-medium rounded-full px-3 py-1.5 w-10 text-center",
         @priority == 1 && "bg-purple-600",
         @priority == 2 && "bg-red-600",
         @priority == 3 && "bg-yellow-600"

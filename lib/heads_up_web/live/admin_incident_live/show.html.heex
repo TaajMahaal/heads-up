@@ -1,7 +1,7 @@
 <div class="incident-show">
   <div class="back">
     <div class="text-gray-100">
-      <.back navigate={~p"/incidents"} class="text-gray-100">
+      <.back navigate={~p"/incidents"}>
         Back to incidents
       </.back>
     </div>
@@ -14,7 +14,7 @@
       </div>
       <header>
         <h2>
-          <div class="text-gray-100">{@incident.name}</div>
+          <div>{@incident.name}</div>
         </h2>
         <.priority priority={@incident.priority} />
       </header>

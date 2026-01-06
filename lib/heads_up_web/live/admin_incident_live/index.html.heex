@@ -1,4 +1,16 @@
 <div class="admin-index">
+  <.button
+    aria-controls="joke"
+    aria-expanded="false"
+    phx-click={JS.toggle(to: "joke", in: "fade-in-scale", out: "fade-out-scale")}
+  >
+    Toggle Joke
+  </.button>
+
+  <div id="joke" class="joke hidden">
+    Why shouldn't you trust trees?
+  </div>
+
   <.header>
     {@page_title}
     <:actions>

@@ -133,7 +133,7 @@
   }
 
   .incident-show .incident section .description {
-    @apply text-gray-100 font-light text-lg;
+    @apply font-light text-lg;
   }
 
   .incident-show .activity {

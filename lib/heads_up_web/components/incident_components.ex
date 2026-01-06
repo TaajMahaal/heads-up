@@ -51,7 +51,7 @@ defmodule HeadsUpWeb.IncidentComponents do
         ]}
       />
 
-      <.link patch={~p"/incidents"} class="button bg-white text-blue-950">
+      <.link patch={~p"/incidents"} class="button">
         Reset
       </.link>
     </.form>
@@ -64,7 +64,7 @@ defmodule HeadsUpWeb.IncidentComponents do
     ~H"""
     <section>
       <h4>
-        <div class="text-gray-100">
+        <div>
           Urgent Incidents
         </div>
       </h4>
@@ -83,7 +83,7 @@ defmodule HeadsUpWeb.IncidentComponents do
           <li :for={incident <- result}>
             <.link navigate={~p"/incidents/#{incident}"}>
               <img src={"#{incident.image_path}"} />
-              <div class="text-gray-100">
+              <div>
                 {"#{incident.name}"}
               </div>
             </.link>
