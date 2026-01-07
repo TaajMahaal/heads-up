@@ -4,6 +4,14 @@ defmodule HeadsUpWeb.CategoryLive.Show do
   alias HeadsUp.Categories
 
   @impl true
+  def mount(%{"id" => id}, _session, socket) do
+    {:ok,
+     socket
+     |> assign(:page_title, "Show Category")
+     |> assign(:category, Categories.get_category!(id, [:incidents]))}
+  end
+
+  @impl true
   def render(assigns) do
     ~H"""
     <.header>
@@ -23,15 +31,21 @@ defmodule HeadsUpWeb.CategoryLive.Show do
       <:item title="Slug">{@category.slug}</:item>
     </.list>
 
+    <section class="mt-12">
+      <h4>Incidents</h4>
+      <ul class="incidents">
+        <li :for={incident <- @category.incidents}>
+          <.link navigate={~p"/incidents/#{incident}"}>
+            <img src={"#{incident.image_path}"} />
+            <div>
+              {"#{incident.name}"}
+            </div>
+          </.link>
+        </li>
+      </ul>
+    </section>
+
     <.back navigate={~p"/categories"}>Back to categories</.back>
     """
-  end
-
-  @impl true
-  def mount(%{"id" => id}, _session, socket) do
-    {:ok,
-     socket
-     |> assign(:page_title, "Show Category")
-     |> assign(:category, Categories.get_category!(id))}
   end
 end

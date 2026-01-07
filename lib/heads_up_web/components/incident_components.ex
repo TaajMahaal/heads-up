@@ -10,6 +10,9 @@ defmodule HeadsUpWeb.IncidentComponents do
     ~H"""
     <.link navigate={~p"/incidents/#{@incident}"} id={@id}>
       <div class="card">
+        <div class="category">
+          {@incident.category.name}
+        </div>
         <img src={@incident.image_path} />
         <h2>{@incident.name}</h2>
         <div class="details">
@@ -22,6 +25,7 @@ defmodule HeadsUpWeb.IncidentComponents do
   end
 
   attr :form, Phoenix.HTML.Form, required: true
+  attr :category_options, :list, required: true
 
   def filter_form(assigns) do
     ~H"""
@@ -42,12 +46,20 @@ defmodule HeadsUpWeb.IncidentComponents do
 
       <.input
         type="select"
+        field={@form[:category]}
+        prompt="Category"
+        options={@category_options}
+      />
+
+      <.input
+        type="select"
         field={@form[:sort_by]}
         prompt="Sort by"
         options={[
           Status: "status",
           "Priority: High to Low": "priority_desc",
-          "Priority: Low to High": "priority_asc"
+          "Priority: Low to High": "priority_asc",
+          Category: "category"
         ]}
       />
 
@@ -76,7 +88,7 @@ defmodule HeadsUpWeb.IncidentComponents do
         </:loading>
         <:failed :let={{:error, reason}}>
           <div class="failed">
-            Daaaaaamn: {reason}
+            Da shit broke bro: {reason}
           </div>
         </:failed>
         <ul class="incidents">

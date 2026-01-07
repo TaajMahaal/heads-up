@@ -1,8 +1,14 @@
 defmodule HeadsUp.Incidents do
+  alias HeadsUp.Categories.Category
   alias HeadsUp.Incidents.Incident
   alias HeadsUp.Repo
 
   import Ecto.Query, warn: false
+
+  def get_incident!(id, preloads \\ []) do
+    Repo.get!(Incident, id)
+    |> Repo.preload(preloads)
+  end
 
   def list_incidents do
     Incident
@@ -27,8 +33,10 @@ defmodule HeadsUp.Incidents do
   def filter_incidents(filter) do
     Incident
     |> with_status(filter["status"])
+    |> with_category(filter["category"])
     |> search_by(filter["q"])
     |> sort(filter["sort_by"])
+    |> preload(:category)
     |> Repo.all()
   end
 
@@ -38,11 +46,19 @@ defmodule HeadsUp.Incidents do
 
   defp with_status(query, _), do: query
 
-  defp search_by(query, q) when q not in ["", nil] do
+  defp search_by(query, q) when q in ["", nil], do: query
+
+  defp search_by(query, q) do
     where(query, [i], ilike(i.name, ^"%#{q}%"))
   end
 
-  defp search_by(query, _), do: query
+  defp with_category(query, slug) when slug in ["", nil], do: query
+
+  defp with_category(query, slug) do
+    from i in query,
+      join: c in assoc(i, :category),
+      where: c.slug == ^slug
+  end
 
   defp sort(query, "priority_asc") do
     order_by(query, desc: :priority)
@@ -56,11 +72,13 @@ defmodule HeadsUp.Incidents do
     order_by(query, :status)
   end
 
-  defp sort(query, _) do
-    order_by(query, :id)
+  defp sort(query, "category") do
+    from i in query,
+      join: c in assoc(i, :category),
+      order_by: c.name
   end
 
-  def get_incident!(id) do
-    Repo.get!(Incident, id)
+  defp sort(query, _) do
+    order_by(query, :id)
   end
 end

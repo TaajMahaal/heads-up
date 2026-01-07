@@ -4,13 +4,15 @@ defmodule HeadsUp.Admin do
 
   import Ecto.Query, warn: false
 
-  def get_incident!(id) do
+  def get_incident!(id, preloads \\ []) do
     Repo.get!(Incident, id)
+    |> Repo.preload(preloads)
   end
 
-  def list_incidents do
+  def list_incidents(preloads \\ []) do
     Incident
     |> order_by(desc: :inserted_at)
+    |> preload(^preloads)
     |> Repo.all()
   end
 

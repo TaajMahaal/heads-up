@@ -35,7 +35,20 @@ defmodule HeadsUp.Categories do
       ** (Ecto.NoResultsError)
 
   """
-  def get_category!(id), do: Repo.get!(Category, id)
+  def get_category!(id, preloads \\ []) do
+    Repo.get!(Category, id)
+    |> Repo.preload(preloads)
+  end
+
+  def category_names_and_ids, do: category_options(:id)
+  def category_names_and_slugs, do: category_options(:slug)
+
+  defp category_options(value_field) do
+    Category
+    |> order_by(:name)
+    |> select([c], {c.name, field(c, ^value_field)})
+    |> Repo.all()
+  end
 
   @doc """
   Creates a category.

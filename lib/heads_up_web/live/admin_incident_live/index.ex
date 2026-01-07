@@ -9,7 +9,7 @@ defmodule HeadsUpWeb.AdminIncidentLive.Index do
     socket =
       socket
       |> assign(:page_title, "Listing incidents")
-      |> stream(:incidents, Admin.list_incidents())
+      |> stream(:incidents, Admin.list_incidents(:category))
 
     {:ok, socket}
   end

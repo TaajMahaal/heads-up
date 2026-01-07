@@ -2,6 +2,8 @@ defmodule HeadsUpWeb.IncidentLive.Index do
   use HeadsUpWeb, :live_view
 
   import HeadsUpWeb.IncidentComponents
+
+  alias HeadsUp.Categories
   alias HeadsUp.Incidents
 
   def mount(_params, _session, socket) do
@@ -9,6 +11,7 @@ defmodule HeadsUpWeb.IncidentLive.Index do
       socket
       |> assign(:page_title, "Incidents")
       |> assign(:resolved_count, Incidents.count_by_status(:resolved))
+      |> assign(:category_options, Categories.category_names_and_slugs())
 
     {:ok, socket}
   end
@@ -25,7 +28,7 @@ defmodule HeadsUpWeb.IncidentLive.Index do
   def handle_event("filter", params, socket) do
     params =
       params
-      |> Map.take(~w"q status sort_by")
+      |> Map.take(~w"q status category sort_by")
       |> Map.reject(fn {_, v} -> v == "" end)
 
     socket = push_patch(socket, to: ~p"/incidents?#{params}")

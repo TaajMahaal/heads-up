@@ -6,7 +6,7 @@
     </:tagline>
   </.headline>
 
-  <.filter_form form={@form} />
+  <.filter_form form={@form} category_options={@category_options} />
 
   <div class="incidents" id="incidents" phx-update="stream">
     <div id="empty" class="no-results only:block hidden">

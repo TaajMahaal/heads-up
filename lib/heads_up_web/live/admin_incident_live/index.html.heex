@@ -27,6 +27,9 @@
     <:col :let={{_dom_id, incident}} label="Name">
       {incident.name}
     </:col>
+    <:col :let={{_dom_id, incident}} label="Category">
+      {incident.category.name}
+    </:col>
     <:col :let={{_dom_id, incident}} label="Status">
       <.badge status={incident.status} />
     </:col>
