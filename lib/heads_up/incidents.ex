@@ -1,5 +1,4 @@
 defmodule HeadsUp.Incidents do
-  alias HeadsUp.Categories.Category
   alias HeadsUp.Incidents.Incident
   alias HeadsUp.Repo
 
