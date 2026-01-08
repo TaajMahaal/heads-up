@@ -18,7 +18,7 @@ defmodule HeadsUpWeb.Router do
   def snoop(conn, _opts) do
     answer = ~w(Yes No Maybe) |> Enum.random()
 
-    assign(conn, :answer, answer) |> IO.inspect()
+    assign(conn, :answer, answer)
   end
 
   scope "/", HeadsUpWeb do
@@ -48,6 +48,7 @@ defmodule HeadsUpWeb.Router do
     pipe_through :api
 
     get "/incidents", IncidentController, :index
+    post "/incidents", IncidentController, :create
     get "/incidents/:id", IncidentController, :show
 
     get "/category", CategoryController, :index

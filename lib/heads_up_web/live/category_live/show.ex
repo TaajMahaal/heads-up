@@ -15,8 +15,13 @@ defmodule HeadsUpWeb.CategoryLive.Show do
   def render(assigns) do
     ~H"""
     <.header>
-      Category {@category.id}
-      <:subtitle>This is a category record from your database.</:subtitle>
+      Category {@category.name}
+      <div class="italic text-xs copy-to" id="category_id">
+        {@category.id}
+      </div>
+      <:subtitle>
+        <div>This is a category record from your database.</div>
+      </:subtitle>
       <:actions>
         <.button phx-click={JS.dispatch("click", to: {:inner, "a"})}>
           <.link navigate={~p"/categories/#{@category}/edit?return_to=show"}>
