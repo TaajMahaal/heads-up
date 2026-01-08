@@ -27,3 +27,22 @@ defmodule HeadsUp.Incidents.Incident do
     |> assoc_constraint(:category)
   end
 end
+
+defimpl Jason.Encoder, for: HeadsUp.Incidents.Incident do
+  def encode(incident, opts) do
+    %{
+      id: incident.id,
+      name: incident.name,
+      description: incident.description,
+      priority: incident.priority,
+      status: incident.status,
+      category_id: incident.category_id
+    }
+    |> put_if_loaded(:category, incident.category)
+    |> Jason.Encode.map(opts)
+  end
+
+  defp put_if_loaded(map, _key, %Ecto.Association.NotLoaded{}), do: map
+  defp put_if_loaded(map, key, value) when is_list(value), do: Map.put(map, key, value)
+  defp put_if_loaded(map, key, %{} = value), do: Map.put(map, key, value)
+end

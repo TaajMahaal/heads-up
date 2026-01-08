@@ -1,26 +1,7 @@
 defmodule HeadsUpWeb.Api.IncidentJSON do
   def index(%{incidents: incidents}) do
-    %{
-      incidents:
-        for(
-          incident <- incidents,
-          do: data(incident)
-        )
-    }
+    %{incidents: incidents}
   end
 
-  def show(%{incident: incident}) do
-    data(incident)
-  end
-
-  defp data(incident) do
-    %{
-      id: incident.id,
-      name: incident.name,
-      description: incident.description,
-      priority: incident.priority,
-      status: incident.status,
-      category_id: incident.category_id
-    }
-  end
+  def show(%{incident: incident}), do: incident
 end
