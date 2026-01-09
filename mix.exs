@@ -52,6 +52,7 @@ defmodule HeadsUp.MixProject do
   defp phoenix_deps do
     [
       {:phoenix, "~> 1.7.21"},
+      # {:phoenix, github: "phoenixframework/phoenix", ref: "bd589f1", override: true},
       {:phoenix_html, "~> 4.1"},
       {:phoenix_live_view, "~> 1.0"},
       {:phoenix_live_dashboard, "~> 0.8.3"},
@@ -92,7 +93,8 @@ defmodule HeadsUp.MixProject do
     [
       {:swoosh, "~> 1.5"},
       {:finch, "~> 0.13"},
-      {:gettext, "~> 0.26"}
+      {:gettext, "~> 0.26"},
+      {:bcrypt_elixir, "~> 3.3"}
     ]
   end
 
