@@ -40,27 +40,30 @@ defmodule HeadsUpWeb.Router do
   scope "/", HeadsUpWeb do
     pipe_through [:browser, :require_authenticated_user]
 
-    live "/admin/incidents", AdminIncidentLive.Index
-    live "/admin/incidents/new", AdminIncidentLive.Form, :new
-    live "/admin/incidents/:id/edit", AdminIncidentLive.Form, :edit
+    live_session :admin,
+      on_mount: {HeadsUpWeb.UserAuth, :ensure_authenticated} do
+      live "/admin/incidents", AdminIncidentLive.Index
+      live "/admin/incidents/new", AdminIncidentLive.Form, :new
+      live "/admin/incidents/:id/edit", AdminIncidentLive.Form, :edit
 
-    live "/categories", CategoryLive.Index, :index
-    live "/categories/new", CategoryLive.Form, :new
-    live "/categories/:id", CategoryLive.Show, :show
-    live "/categories/:id/edit", CategoryLive.Form, :edit
+      live "/categories", CategoryLive.Index, :index
+      live "/categories/new", CategoryLive.Form, :new
+      live "/categories/:id", CategoryLive.Show, :show
+      live "/categories/:id/edit", CategoryLive.Form, :edit
+    end
   end
 
   # Other scopes may use custom stacks.
   scope "/api", HeadsUpWeb.Api do
     pipe_through :api
 
-    get "/incidents", IncidentController, :index
-    post "/incidents", IncidentController, :create
-    get "/incidents/:id", IncidentController, :show
+      get "/incidents", IncidentController, :index
+      post "/incidents", IncidentController, :create
+      get "/incidents/:id", IncidentController, :show
 
-    get "/category", CategoryController, :index
-    get "/category/:id", CategoryController, :show
-    get "/category/:id/incidents", CategoryController, :incidents
+      get "/category", CategoryController, :index
+      get "/category/:id", CategoryController, :show
+      get "/category/:id/incidents", CategoryController, :incidents
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
