@@ -1,6 +1,8 @@
 defmodule HeadsUpWeb.CustomComponents do
   use Phoenix.Component
 
+  alias HeadsUp.Responses.Response
+
   import HeadsUpWeb.CoreComponents
 
   attr :status, :atom, values: [:pending, :resolved, :canceled], default: :pending
@@ -78,6 +80,34 @@ defmodule HeadsUpWeb.CustomComponents do
 
         <.button>Post</.button>
     </.form>
+    """
+  end
+
+
+  attr :id, :string, required: true
+  attr :response, Response, required: true
+
+  def response(assigns) do
+    ~H"""
+    <div class="response" id={@id}>
+      <span class="timeline"></span>
+      <section>
+        <div class="avatar">
+          <.icon name="hero-user-solid" />
+        </div>
+        <div>
+          <span class="username">
+            {@response.user.username}
+          </span>
+          <span>
+            {@response.status}
+          </span>
+          <blockquote>
+            {@response.note}
+          </blockquote>
+        </div>
+      </section>
+    </div>
     """
   end
 end

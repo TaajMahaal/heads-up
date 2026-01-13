@@ -32,40 +32,26 @@
     </div>
     <div class="activity">
         <div class="left">
-            <div :if={@incident.status == :pending}>
-                <%= if @current_user do %>
-                    <.response_form form={@form} />
-                <% else %>
-                    <.link href={~p"/users/log-in"} class="button">
-                        Login to post
-                    </.link>
-                <% end %>
-            </div>
-            <section>
-              <h4>
-                <div>
-                Responses
-                </div>
-              </h4>
-              <%= if @responses_loading do %>
-                <div class="loading">
-                  <div class="spinner"></div>
-                </div>
+          <div :if={@incident.status == :pending}>
+              <%= if @current_user do %>
+                  <.response_form form={@form} />
               <% else %>
-                <ul class="incidents" id="responses" phx-update="stream">
-                  <li :for={{dom_id, response} <- @streams.responses} id={dom_id}>
-                    <div>
-                      {"#{response.status}"}
-                    </div>
-                    <%= if response.note != "" do %>
-                    <div>
-                      Note: {"#{response.note}"}
-                    </div>
-                    <% end %>
-                  </li>
-                </ul>
+                  <.link href={~p"/users/log-in"} class="button">
+                      Login to post
+                  </.link>
               <% end %>
-            </section>
+          </div>
+          <%= if @responses_loading do %>
+            <div class="loading">
+                <div class="spinner"></div>
+            </div>
+          <% else %>
+            <div id="responses" phx-update="stream">
+              <.response :for={{dom_id, response} <- @streams.responses}
+              id={dom_id}
+              response={response} />
+            </div>
+          <% end %>
         </div>
         <div class="right">
             <.urgent_incidents incidents={@urgent_incidents} />

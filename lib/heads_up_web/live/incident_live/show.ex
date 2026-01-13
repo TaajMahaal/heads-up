@@ -83,8 +83,8 @@ defmodule HeadsUpWeb.IncidentLive.Show do
 
           socket =
             socket
-            |> stream_insert(:responses, response, at: 0)
             |> assign(:form, to_form(changeset))
+            |> stream_insert(:responses, response, at: 0)
 
           {:noreply, socket}
         {:error, changeset} ->
