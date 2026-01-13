@@ -12,6 +12,8 @@ defmodule HeadsUp.Accounts.User do
     field :current_password, :string, virtual: true, redact: true
     field :confirmed_at, :utc_datetime_usec
 
+    has_many :responses, HeadsUp.Reponses.Reponse
+
     timestamps(type: :utc_datetime_usec)
   end
 

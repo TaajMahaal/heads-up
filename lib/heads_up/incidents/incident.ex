@@ -10,6 +10,8 @@ defmodule HeadsUp.Incidents.Incident do
 
     belongs_to :category, HeadsUp.Categories.Category
 
+    has_many :responses, HeadsUp.Responses.Response
+
     timestamps(type: :utc_datetime_usec)
   end
 

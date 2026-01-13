@@ -6,7 +6,11 @@ defmodule HeadsUpWeb.IncidentLive.Show do
 
   import HeadsUpWeb.IncidentComponents
 
+  on_mount {HeadsUpWeb.UserAuth, :mount_current_user}
+
   def mount(_params, _session, socket) do
+    socket = assign(socket, :form, to_form(%{}))
+
     {:ok, socket}
   end
 
