@@ -14,7 +14,10 @@ defmodule HeadsUpWeb.IncidentLive.Show do
   def mount(_params, _session, socket) do
     changeset = Responses.change_response(%Response{})
 
-    socket = assign(socket, :form, to_form(changeset))
+    socket =
+      socket
+      |> assign(:form, to_form(changeset))
+      |> stream(:responses, [])
 
     {:ok, socket}
   end
@@ -26,7 +29,11 @@ defmodule HeadsUpWeb.IncidentLive.Show do
       socket
       |> assign(:incident, incident)
       |> assign(:page_title, incident.name)
+      |> assign(:responses_loading, true)
       |> assign(:urgent_incidents, AsyncResult.loading())
+      |> start_async(:fetch_responses, fn ->
+        Responses.list_responses_by_incident_id(id)
+      end)
       |> start_async(:fetch_urgent_incidents, fn ->
         Incidents.urgent_incidents(incident)
       end)
@@ -46,6 +53,19 @@ defmodule HeadsUpWeb.IncidentLive.Show do
     {:noreply, assign(socket, :urgent_incidents, result)}
   end
 
+  def handle_async(:fetch_responses, {:ok, responses}, socket) do
+    socket =
+      socket
+      |> stream(:responses, responses)
+      |> assign(:responses_loading, false)
+
+    {:noreply, socket}
+  end
+
+  def handle_async(:fetch_responses, {:exit, _reason}, socket) do
+    {:noreply, assign(socket, :responses_loading, false)}
+  end
+
   def handle_event("validate", %{"response" => response_params }, socket) do
     changeset = Responses.change_response(%Response{}, response_params)
 
@@ -58,10 +78,13 @@ defmodule HeadsUpWeb.IncidentLive.Show do
     %{incident: incident, current_user: user} = socket.assigns
 
     case Responses.create_response(incident, user, response_params) do
-        {:ok, _response} ->
+        {:ok, response} ->
           changeset = Responses.change_response(%Response{})
 
-          socket = assign(socket, :form, to_form(changeset))
+          socket =
+            socket
+            |> stream_insert(:responses, response, at: 0)
+            |> assign(:form, to_form(changeset))
 
           {:noreply, socket}
         {:error, changeset} ->

@@ -41,6 +41,31 @@
                     </.link>
                 <% end %>
             </div>
+            <section>
+              <h4>
+                <div>
+                Responses
+                </div>
+              </h4>
+              <%= if @responses_loading do %>
+                <div class="loading">
+                  <div class="spinner"></div>
+                </div>
+              <% else %>
+                <ul class="incidents" id="responses" phx-update="stream">
+                  <li :for={{dom_id, response} <- @streams.responses} id={dom_id}>
+                    <div>
+                      {"#{response.status}"}
+                    </div>
+                    <%= if response.note != "" do %>
+                    <div>
+                      Note: {"#{response.note}"}
+                    </div>
+                    <% end %>
+                  </li>
+                </ul>
+              <% end %>
+            </section>
         </div>
         <div class="right">
             <.urgent_incidents incidents={@urgent_incidents} />
