@@ -4,8 +4,10 @@ defmodule HeadsUp.Responses do
   """
 
   import Ecto.Query, warn: false
-  alias HeadsUp.Repo
 
+  alias HeadsUp.Accounts.User
+  alias HeadsUp.Incidents.Incident
+  alias HeadsUp.Repo
   alias HeadsUp.Responses.Response
 
   @doc """
@@ -49,8 +51,8 @@ defmodule HeadsUp.Responses do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_response(attrs \\ %{}) do
-    %Response{}
+  def create_response(%Incident{} = incident, %User{} = user, attrs \\ %{}) do
+    %Response{user: user, incident: incident}
     |> Response.changeset(attrs)
     |> Repo.insert()
   end

@@ -2,14 +2,19 @@ defmodule HeadsUpWeb.IncidentLive.Show do
   use HeadsUpWeb, :live_view
 
   alias HeadsUp.Incidents
+  alias HeadsUp.Responses
+  alias HeadsUp.Responses.Response
   alias Phoenix.LiveView.AsyncResult
 
   import HeadsUpWeb.IncidentComponents
+  import HeadsUpWeb.CustomComponents
 
   on_mount {HeadsUpWeb.UserAuth, :mount_current_user}
 
   def mount(_params, _session, socket) do
-    socket = assign(socket, :form, to_form(%{}))
+    changeset = Responses.change_response(%Response{})
+
+    socket = assign(socket, :form, to_form(changeset))
 
     {:ok, socket}
   end
@@ -39,5 +44,30 @@ defmodule HeadsUpWeb.IncidentLive.Show do
     result = AsyncResult.failed(socket.assigns.urgent_incidents, {:error, reason})
 
     {:noreply, assign(socket, :urgent_incidents, result)}
+  end
+
+  def handle_event("validate", %{"response" => response_params }, socket) do
+    changeset = Responses.change_response(%Response{}, response_params)
+
+    socket = assign(socket, :form, to_form(changeset, action: :validate))
+
+    {:noreply, socket}
+  end
+
+  def handle_event("save", %{"response" => response_params }, socket) do
+    %{incident: incident, current_user: user} = socket.assigns
+
+    case Responses.create_response(incident, user, response_params) do
+        {:ok, _response} ->
+          changeset = Responses.change_response(%Response{})
+
+          socket = assign(socket, :form, to_form(changeset))
+
+          {:noreply, socket}
+        {:error, changeset} ->
+          socket = assign(socket, :form, to_form(changeset))
+
+          {:noreply, socket}
+    end
   end
 end

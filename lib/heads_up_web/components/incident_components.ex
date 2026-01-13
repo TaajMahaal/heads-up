@@ -1,8 +1,6 @@
 defmodule HeadsUpWeb.IncidentComponents do
   use HeadsUpWeb, :html
 
-  import HeadsUpWeb.CustomComponents
-
   attr :incident, HeadsUp.Incidents.Incident, required: true
   attr :id, :string, required: true
 

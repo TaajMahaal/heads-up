@@ -1,6 +1,8 @@
 defmodule HeadsUpWeb.CustomComponents do
   use Phoenix.Component
 
+  import HeadsUpWeb.CoreComponents
+
   attr :status, :atom, values: [:pending, :resolved, :canceled], default: :pending
   attr :class, :atom, default: nil
   attr :rest, :global
@@ -55,6 +57,27 @@ defmodule HeadsUpWeb.CustomComponents do
         {render_slot(@tagline)}
       </div>
     </div>
+    """
+  end
+
+  attr :form, Phoenix.HTML.Form, required: true
+
+  def response_form(assigns) do
+    ~H"""
+    <.form for={@form} id="response-form" phx-change="validate" phx-submit="save">
+        <.input
+            field={@form[:status]}
+            type="select"
+            prompt="Choose a status"
+            options={[:enroute, :arrived, :departed]} />
+
+        <.input field={@form[:note]}
+            type="textarea"
+            placeholder="Note..."
+            autofocus />
+
+        <.button>Post</.button>
+    </.form>
     """
   end
 end
