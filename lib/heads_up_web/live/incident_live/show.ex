@@ -32,7 +32,7 @@ defmodule HeadsUpWeb.IncidentLive.Show do
       |> assign(:responses_loading, true)
       |> assign(:urgent_incidents, AsyncResult.loading())
       |> start_async(:fetch_responses, fn ->
-        Responses.list_responses_by_incident_id(id)
+        Incidents.list_responses(incident)
       end)
       |> start_async(:fetch_urgent_incidents, fn ->
         Incidents.urgent_incidents(incident)

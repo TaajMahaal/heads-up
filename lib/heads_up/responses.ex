@@ -23,13 +23,6 @@ defmodule HeadsUp.Responses do
     Repo.all(Response)
   end
 
-  def list_responses_by_incident_id(incident_id) do
-    Response
-    |> where([r], r.incident_id == ^incident_id)
-    |> order_by([r], desc: r.inserted_at)
-    |> Repo.all()
-  end
-
   @doc """
   Gets a single response.
 

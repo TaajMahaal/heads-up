@@ -29,6 +29,13 @@ defmodule HeadsUp.Incidents do
     |> Repo.all()
   end
 
+  def list_responses(incident) do
+    incident
+    |> Ecto.assoc(:responses)
+    |> order_by([r], desc: r.inserted_at)
+    |> Repo.all
+  end
+
   def filter_incidents(filter) do
     Incident
     |> with_status(filter["status"])
