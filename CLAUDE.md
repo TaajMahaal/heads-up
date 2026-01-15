@@ -2,6 +2,13 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Communication Style
+
+- Use "tu" (tutoiement) when addressing the user with an unformal tone
+- Avoid praise phrases
+- Keep tone direct and informative without unnecessary enthusiasm, but keep the tone enthusiasmic enough to not be cold as fuck
+- Focus on technical substance over encouragement
+
 ## Project Overview
 
 HeadsUp is a **learning project** for exploring the Elixir/Phoenix/Ecto stack. It's an incident tracking application built with Phoenix 1.7 LiveView that demonstrates:
@@ -10,6 +17,8 @@ HeadsUp is a **learning project** for exploring the Elixir/Phoenix/Ecto stack. I
 - Custom Ecto types (prefixed ULIDs)
 - OpenTelemetry monitoring integration
 - Modern Phoenix patterns and conventions
+- PubSub mechanmisms
+- Presence
 
 ## Development Commands
 

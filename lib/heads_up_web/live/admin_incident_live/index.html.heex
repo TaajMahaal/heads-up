@@ -36,6 +36,15 @@
     <:col :let={{_dom_id, incident}} label="Priority">
       <.priority priority={incident.priority} />
     </:col>
+    <:col :let={{_dom_id, incident}} label="Hero">
+      <div>
+        <%= if incident.heroic_response do %>
+          <div class="text-center font-bold">
+            {incident.heroic_response.user.username}
+          </div>
+        <% end %>
+      </div>
+    </:col>
     <:action :let={{_dom_id, incident}}>
       <.link navigate={~p"/admin/incidents/#{incident}/edit"}>
         Edit
@@ -48,6 +57,14 @@
         data-confirm="Are you sure?"
       >
         <.icon name="hero-trash" class="h-4 w-4" />
+      </.link>
+    </:action>
+    <:action :let={{_dom_id, incident}}>
+      <.link
+        phx-click="draw-heroic-response"
+        phx-value-id={incident.id}
+      >
+        Draw Hero
       </.link>
     </:action>
   </.table>

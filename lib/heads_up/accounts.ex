@@ -8,6 +8,22 @@ defmodule HeadsUp.Accounts do
 
   alias HeadsUp.Accounts.{User, UserToken, UserNotifier}
 
+  def list_users do
+    Repo.all(User)
+  end
+
+  def promote_to_admin(%User{} = user) do
+    user
+    |> Ecto.Changeset.change(%{is_admin: true})
+    |> Repo.update()
+  end
+
+  def demote_from_admin(%User{} = user) do
+    user
+    |> Ecto.Changeset.change(%{is_admin: false})
+    |> Repo.update()
+  end
+
   ## Database getters
 
   @doc """

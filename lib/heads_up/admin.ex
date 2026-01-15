@@ -33,7 +33,7 @@ defmodule HeadsUp.Admin do
     |> Repo.update()
     |> case do
       {:ok, incident} ->
-        incident = Repo.preload(incident, :category)
+        incident = Repo.preload(incident, [:category, heroic_response: :user])
 
         Incidents.broadcast(incident.id, {:incident_updated, incident})
         {:ok, incident}
@@ -45,5 +45,26 @@ defmodule HeadsUp.Admin do
 
   def delete_incident(incident) do
     Repo.delete(incident)
+  end
+
+  def draw_heroic_response(%Incident{status: :resolved} = incident) do
+    incident = Repo.preload(incident, [:responses, heroic_response: :user])
+
+    case incident.responses do
+      [] ->
+        {:error, "No responses to draw!"}
+
+      responses ->
+        response = Enum.random(responses)
+
+        {:ok, _incident} =
+          update_incident(incident, %{
+            heroic_response_id: response.id
+          })
+    end
+  end
+
+  def draw_heroic_response(%Incident{}) do
+    {:error, "Incident must be resolved to draw a heroic response!"}
   end
 end

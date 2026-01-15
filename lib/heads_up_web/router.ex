@@ -44,7 +44,8 @@ defmodule HeadsUpWeb.Router do
       on_mount: [
         {HeadsUpWeb.UserAuth, :ensure_authenticated},
         {HeadsUpWeb.UserAuth, :ensure_admin}
-       ] do
+      ] do
+      live "/admin/users", UserLive.Index, :index
       live "/admin/incidents", AdminIncidentLive.Index
       live "/admin/incidents/new", AdminIncidentLive.Form, :new
       live "/admin/incidents/:id/edit", AdminIncidentLive.Form, :edit
@@ -60,13 +61,13 @@ defmodule HeadsUpWeb.Router do
   scope "/api", HeadsUpWeb.Api do
     pipe_through :api
 
-      get "/incidents", IncidentController, :index
-      post "/incidents", IncidentController, :create
-      get "/incidents/:id", IncidentController, :show
+    get "/incidents", IncidentController, :index
+    post "/incidents", IncidentController, :create
+    get "/incidents/:id", IncidentController, :show
 
-      get "/category", CategoryController, :index
-      get "/category/:id", CategoryController, :show
-      get "/category/:id/incidents", CategoryController, :incidents
+    get "/category", CategoryController, :index
+    get "/category/:id", CategoryController, :show
+    get "/category/:id/incidents", CategoryController, :incidents
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development

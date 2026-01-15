@@ -27,7 +27,7 @@ defmodule HeadsUpWeb.IncidentLive.Show do
       Incidents.subscribe(id)
     end
 
-    incident = Incidents.get_incident!(id, [:category])
+    incident = Incidents.get_incident!(id, [:category, heroic_response: :user])
 
     socket =
       socket
@@ -101,7 +101,7 @@ defmodule HeadsUpWeb.IncidentLive.Show do
     socket =
       socket
       |> stream_insert(:responses, response, at: 0)
-      |> assign(:response_count, &(&1 + 1))
+      |> update(:response_count, &(&1 + 1))
 
     {:noreply, socket}
   end

@@ -7,7 +7,7 @@ defmodule HeadsUpWeb.AdminIncidentLive.Index do
     socket =
       socket
       |> assign(:page_title, "Listing incidents")
-      |> stream(:incidents, Admin.list_incidents(:category))
+      |> stream(:incidents, Admin.list_incidents([:category, heroic_response: :user]))
 
     {:ok, socket}
   end
@@ -30,6 +30,23 @@ defmodule HeadsUpWeb.AdminIncidentLive.Index do
           |> put_flash(:error, "Failed to delete incident #{incident.name}")
 
         {:noreply, socket}
+    end
+  end
+
+  def handle_event("draw-heroic-response", %{"id" => id}, socket) do
+    incident = Admin.get_incident!(id)
+
+    case Admin.draw_heroic_response(incident) do
+      {:ok, incident} ->
+        socket =
+          socket
+          |> put_flash(:info, "Heroic response drawn!")
+          |> stream_insert(:incidents, incident)
+
+        {:noreply, socket}
+
+      {:error, error} ->
+        {:noreply, put_flash(socket, :error, error)}
     end
   end
 
