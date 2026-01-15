@@ -6,8 +6,9 @@ defmodule HeadsUpWeb.IncidentLive.Show do
   alias HeadsUp.Responses.Response
   alias Phoenix.LiveView.AsyncResult
 
-  import HeadsUpWeb.IncidentComponents
   import HeadsUpWeb.CustomComponents
+  import HeadsUpWeb.IncidentComponents
+  alias HeadsUpWeb.Presence
 
   on_mount {HeadsUpWeb.UserAuth, :mount_current_user}
 
@@ -23,9 +24,22 @@ defmodule HeadsUpWeb.IncidentLive.Show do
   end
 
   def handle_params(%{"id" => id}, _uri, socket) do
+    %{current_user: current_user} = socket.assigns
+
     if connected?(socket) do
       Incidents.subscribe(id)
+
+      if current_user do
+        {:ok, _} = Presence.track(self(), topic(id), current_user.username, %{
+          online_at: System.system_time(:second)
+        })
+      end
     end
+
+    presences =
+      Presence.list(topic(id))
+      |> Enum.map(fn {username, %{metas: metas}} ->
+        %{id: username, metas: metas} end)
 
     incident = Incidents.get_incident!(id, [:category, heroic_response: :user])
 
@@ -34,6 +48,7 @@ defmodule HeadsUpWeb.IncidentLive.Show do
       |> assign(:incident, incident)
       |> assign(:page_title, incident.name)
       |> assign(:responses_loading, true)
+      |> stream(:presences, presences)
       |> assign(:urgent_incidents, AsyncResult.loading())
       |> start_async(:fetch_responses, fn ->
         Incidents.list_responses(incident)
@@ -43,6 +58,10 @@ defmodule HeadsUpWeb.IncidentLive.Show do
       end)
 
     {:noreply, socket}
+  end
+
+  defp topic(id) do
+    "incident_watchers:#{id}"
   end
 
   def handle_async(:fetch_urgent_incidents, {:ok, incidents}, socket) do

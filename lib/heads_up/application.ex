@@ -16,13 +16,14 @@ defmodule HeadsUp.Application do
       end
 
       children = [
-        HeadsUpWeb.Telemetry,
         HeadsUp.Repo,
+        HeadsUpWeb.Endpoint,
+        HeadsUpWeb.Telemetry,
         {DNSCluster, query: Application.get_env(:heads_up, :dns_cluster_query) || :ignore},
         {Phoenix.PubSub, name: HeadsUp.PubSub},
         {Finch, name: HeadsUp.Finch},
-        HeadsUpWeb.Endpoint,
-        {HeadsUp.OtelLogsSender, []}
+        {HeadsUp.OtelLogsSender, []},
+        HeadsUpWeb.Presence,
       ]
 
       opts = [strategy: :one_for_one, name: HeadsUp.Supervisor]

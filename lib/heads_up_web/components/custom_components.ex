@@ -110,4 +110,21 @@ defmodule HeadsUpWeb.CustomComponents do
     </div>
     """
   end
+
+
+  attr :presences, :list, required: true
+
+  def incident_onlookers(assigns) do
+    ~H"""
+        <section>
+            <h4>Who's there?</h4>
+            <ul class="presences" id="incident-onlookers" phx-update="stream">
+                <li :for={{dom_id, %{id: username, metas: metas}} <- @presences} id={dom_id}>
+                    <.icon name="hero-user-circle-solid" class="w-5 h-5" />
+                    {username} ({length(metas)})
+                </li>
+            </ul>
+        </section>
+    """
+  end
 end

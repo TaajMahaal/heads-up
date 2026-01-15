@@ -72,6 +72,8 @@
     </div>
     <div class="right">
       <.urgent_incidents incidents={@urgent_incidents} />
+
+      <.incident_onlookers :if={@current_user} presences={@streams.presences} />
     </div>
   </div>
 </div>
