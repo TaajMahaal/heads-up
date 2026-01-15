@@ -23,6 +23,10 @@ defmodule HeadsUpWeb.IncidentLive.Show do
   end
 
   def handle_params(%{"id" => id}, _uri, socket) do
+    if connected?(socket) do
+      Incidents.subscribe(id)
+    end
+
     incident = Incidents.get_incident!(id, [:category])
 
     socket =
@@ -57,6 +61,7 @@ defmodule HeadsUpWeb.IncidentLive.Show do
     socket =
       socket
       |> stream(:responses, responses)
+      |> assign(:response_count, Enum.count(responses))
       |> assign(:responses_loading, false)
 
     {:noreply, socket}
@@ -66,7 +71,7 @@ defmodule HeadsUpWeb.IncidentLive.Show do
     {:noreply, assign(socket, :responses_loading, false)}
   end
 
-  def handle_event("validate", %{"response" => response_params }, socket) do
+  def handle_event("validate", %{"response" => response_params}, socket) do
     changeset = Responses.change_response(%Response{}, response_params)
 
     socket = assign(socket, :form, to_form(changeset, action: :validate))
@@ -74,23 +79,34 @@ defmodule HeadsUpWeb.IncidentLive.Show do
     {:noreply, socket}
   end
 
-  def handle_event("save", %{"response" => response_params }, socket) do
+  def handle_event("save", %{"response" => response_params}, socket) do
     %{incident: incident, current_user: user} = socket.assigns
 
     case Responses.create_response(incident, user, response_params) do
-        {:ok, response} ->
-          changeset = Responses.change_response(%Response{})
+      {:ok, _response} ->
+        changeset = Responses.change_response(%Response{})
 
-          socket =
-            socket
-            |> assign(:form, to_form(changeset))
-            |> stream_insert(:responses, response, at: 0)
+        socket = assign(socket, :form, to_form(changeset))
 
-          {:noreply, socket}
-        {:error, changeset} ->
-          socket = assign(socket, :form, to_form(changeset))
+        {:noreply, socket}
 
-          {:noreply, socket}
+      {:error, changeset} ->
+        socket = assign(socket, :form, to_form(changeset))
+
+        {:noreply, socket}
     end
+  end
+
+  def handle_info({:response_created, response}, socket) do
+    socket =
+      socket
+      |> stream_insert(:responses, response, at: 0)
+      |> assign(:response_count, &(&1 + 1))
+
+    {:noreply, socket}
+  end
+
+  def handle_info({:incident_updated, updated_incident}, socket) do
+    {:noreply, assign(socket, :incident, updated_incident)}
   end
 end

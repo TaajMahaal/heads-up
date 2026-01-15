@@ -4,6 +4,14 @@ defmodule HeadsUp.Incidents do
 
   import Ecto.Query, warn: false
 
+  def subscribe(incident_id) do
+    Phoenix.PubSub.subscribe(HeadsUp.PubSub, "incidents:#{incident_id}")
+  end
+
+  def broadcast(incident_id, message) do
+    Phoenix.PubSub.broadcast(HeadsUp.PubSub, "incidents:#{incident_id}", message)
+  end
+
   def get_incident!(id, preloads \\ []) do
     Repo.get!(Incident, id)
     |> Repo.preload(preloads)
@@ -34,7 +42,7 @@ defmodule HeadsUp.Incidents do
     |> Ecto.assoc(:responses)
     |> preload(:user)
     |> order_by(desc: :inserted_at)
-    |> Repo.all
+    |> Repo.all()
   end
 
   def filter_incidents(filter) do
